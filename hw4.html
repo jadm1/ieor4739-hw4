@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <title>IEOR 4739</title>
+</head>
+<body style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 200);" link="#000099" vlink="#008080" alink="#000099">
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; <big style="color: rgb(0, 0, 153);"><big>IEOR
+4739 -- Explaining asset returns using assets<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <small><span style="font-weight: bold;">Due March 28, 2016<br>
+</span></small></big></big>
+<table style="width: 80%; text-align: left;" border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><big style="color: rgb(0, 0, 153);"><big><small><small><span style="color: rgb(0, 0, 0);"><span style="font-weight: bold;">
+      </span>Three-part assignment:<br>
+      <br>
+      <b>(a)</b> Extend the principal components code we developed in class so as
+      to compute the top ten eigenvalues and corresponding eigenvectors. Run it
+      on the Russell-1000 covariance matrix (computed using qas many days as you have). 
+      <br> <br><b>(b)</b>Compare your code from (a) with the best numpy 
+implementation you
+      can find.  Do they agree (i.e. are the eigenvalues and 
+eigenvectors about the same)? Which one is faster? Note that numpy comes
+ with several operators
+      already. <br><br>
+      <b>(c)</b> Take a portfolio allocation (percentages) you computed 
+for the Russell-1000 using the porfolio optimization algorithm you 
+developed.  Convert them into stock quantities as per the first day 
+prices, using a total
+      of one billion dollars for the initial portfolio value.  This 
+exercise
+      asks you to run the P &amp; L analysis for the resulting 
+portfolio, without
+      any rebalancing (so the quantities you have on day 1 are the 
+quantities
+      you will have at the end).  You will run a number of simulations 
+of this
+      analysis, using random perturbations of the prices.  On each run 
+you
+      will report the final portfolio value, and the average daily 
+portfolio return.  This program should be in C.<br><br>
+
+      The random perturbations are constructed as follows.
+      Consider an asset k.  Suppose that over the entire
+      history, the average change (up or down) for the <b> price </b>
+      of asset k (day over day) is delta[k], and the standard deviation 
+for the change of price of asset k (again day over day) is sigma[k].  
+Then, on each day
+      t, you change the price of asset k by a normally distributed 
+random variable of mean delta[k] and standard deviation sigma[k].  This 
+is done independently for all assets, and for all days in the history.  
+ This ensemble of new prices
+      constitutes one sample, on which you need to perform the P &amp; 
+L. <br>
+<br>
+      Do this on <b>at least</b> one million samples.  Feel free to use a
+      multithreaded setup if you have a multicore machine.  
+      <br>
+      <b>Note</b>: you may use the "Box-Muller" transform to draw normally
+      distributed values.
+      <br>
+      <br>
+      </span></small></small></big></big>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<big style="color: rgb(0, 0, 153);"><big><small><small><span style="color: rgb(0, 0, 0);"><br>
+</span></small><span style="font-weight: bold;"><br>
+</span></small><br>
+</big></big>
+
+<ul>
+</ul>
+
+
+</body></html>
