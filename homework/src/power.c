@@ -10,14 +10,13 @@
 void PWRComputeError(int n, double *perror, double *newvector, double *vector);
 
 /** free memory of a bag**/
-void PWRFreeBag(powerbag **ppbag)
+void PWRFreeBag(PowerBag **ppbag)
 {
-	powerbag *pbag = *ppbag;
+	PowerBag *pbag = *ppbag;
 
 	if (pbag == NULL) goto BACK;
 
-	UTLFree((void**)&pbag->vector0);
-	UTLFree((void**)&pbag->qcopy);
+	UTLFree((void**)&pbag->vec0);
 	UTLFree((void**)&pbag);
 
 	BACK:
@@ -26,23 +25,23 @@ void PWRFreeBag(powerbag **ppbag)
 
 
 
-int PWRAllocBag(int n, int r, double *covmatrix, powerbag **ppbag, double scale, double tolerance)
+int PWRAllocBag(int n, int r, double *covmatrix, PowerBag **ppbag, double scale, double tolerance)
 {
 	int retcode = 0;
 	int i;
-	powerbag *pbag = NULL;
+	PowerBag *pbag = NULL;
 	double *double_array = NULL;
 
-	double *vector, *vector0, *newvector, *q, *qprime, *qcopy, *scratch, *eigenvalue;
+	double *vector, *vector0, *newvector, *q, *qprime, *eigenvalue;
 
-	pbag = (powerbag *)calloc(1, sizeof(powerbag));
+	pbag = (PowerBag *)calloc(1, sizeof(PowerBag));
 	if (pbag == NULL) {
 		printf("cannot allocate bag\n");
 		retcode = NOMEMORY; goto BACK;
 	}
 
 
-	double_array = calloc(n*r + n*r + n*r + n*n + n*n, sizeof(double));
+	double_array = (double*)calloc(n*r + n*r + n*r + n*n + n*n, sizeof(double));
 	if (double_array == NULL) {
 		retcode = NOMEMORY; goto BACK;
 	}
@@ -54,16 +53,9 @@ int PWRAllocBag(int n, int r, double *covmatrix, powerbag **ppbag, double scale,
 	qprime = &double_array[n*r + n*r + n*r];
 	q = &double_array[n*r + n*r + n*r + n*n];
 
-	/** now, allocate an extra matrix and a vector to use in perturbation **/
-	/** should really do it in the power retcode since we are putting them in the bag **/
-	qcopy = (double *)calloc(n*n, sizeof(double));
-	scratch = (double *)calloc(n, sizeof(double));
-	if ((qcopy == NULL) || (scratch == NULL)) {
-		retcode = NOMEMORY; goto BACK;
-	}
-	/** and copy the covariance matrix **/
+	/** copy the covariance matrix **/
 	for(i = 0; i < n*n; i++)
-		qcopy[i] = covmatrix[i];
+		q[i] = covmatrix[i];
 
 	eigenvalue = (double*)calloc(n, sizeof(double));
 
@@ -74,13 +66,10 @@ int PWRAllocBag(int n, int r, double *covmatrix, powerbag **ppbag, double scale,
 		pbag->r = r;
 		pbag->q = q;
 		pbag->qprime = qprime;
-		pbag->qcopy = qcopy;
-		pbag->scratch = scratch;
-		pbag->scale = scale;
-		pbag->eigenvalue = eigenvalue;
-		pbag->vector = vector;
-		pbag->vector0 = vector0;
-		pbag->newvector = newvector;
+		pbag->eigval = eigenvalue;
+		pbag->vec = vector;
+		pbag->vec0 = vector0;
+		pbag->nextvec = newvector;
 		pbag->tolerance = tolerance;
 	}
 	if (retcode != 0) {
@@ -143,9 +132,7 @@ int PWRLoadCov(char *filename, int *pn, double **pmatrix)
 
 
 /** Compute a power method iteration **/
-void PWRPowerIteration(
-		int n, double *vector, double *newvector, double *q,
-		double *peigenvalue, double *perror)
+void PWRPCAIteration(int n, double *vector, double *newvector, double *q, double *peigenvalue, double *perror)
 {
 	double norm2 = 0, mult, error;
 	int i, j;
@@ -196,4 +183,96 @@ void PWRComputeError(int n, double *perror, double *newvector, double *vector)
 }
 
 
+void PWRPCA(PowerBag *pbag, unsigned int *prseed,
+		int (*itercallback)(void *data_itercb, int k, int f, double error), void *data_itercb, int interval_itercb,
+		int (*eigvalcallback)(void *data_eigvalcb, int k, int f, double error), void *data_eigvalcb
+) {
+	int i, j;
+	int n, r;
+	double *vector, *vector0, *newvector;
+	int retcode = 0;
+	double tolerance, sp;
+
+	int k, f;
+	double error;
+
+	n = pbag->n;
+	r = pbag->r;
+	vector = pbag->vec;
+	vector0 = pbag->vec0;
+	newvector = pbag->nextvec;
+	tolerance = pbag->tolerance;
+
+	/** initialize first vector to random**/
+	for(j = 0; j < n*1; j++){
+		vector0[j] = rand_r(prseed)/((double) RAND_MAX);
+	}
+
+	/** copy Q into Q'  so that we only deal with Q' and afterwards**/
+	for (j = 0; j < n*n; j++)
+		pbag->qprime[j] = pbag->q[j];
+
+	for (f = 0; f < r; f++) {
+		/** copy f-th column vector0 into vector **/
+		for(j = 0; j < n; j++){
+			vector[f*n + j] = vector0[f*n + j];
+		}
+		for(k = 0; ; k++) {
+
+			/* showVector(n, vector);*/
+			PWRPCAIteration(n, &vector[f*n], &newvector[f*n], pbag->qprime, &pbag->eigval[f], &error);
+
+
+			if(error < tolerance) {
+				/** finished to compute f-th eigen value **/
+
+
+				/** Set Q' = Q' - lambda w w^T **/
+				for(i = 0; i < n; i++){
+					for (j = 0; j < n; j++){
+						pbag->qprime[i*n + j] -= pbag->eigval[f]*vector[f*n + i]*vector[f*n + j];
+					}
+				}
+
+				/** Set w'_0 = w_0 - (w^T w_0) w **/
+				if (f < r-1) {
+					/** first compute sp = (w^T w_0)**/
+					sp = 0.0;
+					for (j = 0; j < n; j++) {
+						sp += vector[f*n + j] * vector0[f*n + j];
+					}
+					/** Set w'_0 = w_0 - sp * w **/
+					for (j = 0; j < n; j++) {
+						vector0[(f+1)*n + j] = vector0[f*n + j] - sp * vector[f*n + j];
+					}
+				}
+
+				if (eigvalcallback != NULL) {
+					retcode = eigvalcallback(data_eigvalcb, k, f, error);
+					if (retcode != 0) {
+						goto BACK;
+					}
+				}
+
+				break;
+			}
+
+			/**pbag->itercount = k;**/  /** well, in this case we don't really need k **/
+
+			if (k % interval_itercb == 0) {
+				if (itercallback != NULL) {
+					retcode  = itercallback(data_itercb, k, f, error);
+					if (retcode != 0) {
+						goto BACK;
+					}
+				}
+			}
+
+		}
+	}
+
+	BACK:
+
+	return;
+}
 

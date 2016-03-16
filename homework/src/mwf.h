@@ -18,27 +18,12 @@
  * **/
 
 
-typedef struct WorkerBag {
-	int ID; /** worker thread ID **/
-	int status; /** status code **/
-	int command; /** command code **/
-	int jobnumber;
-	int itercount;
-	pthread_mutex_t *psynchro; /** mutex pointer for communication with the master thread **/
-	pthread_mutex_t *poutputmutex; /** mutex pointer for outputing text to the console**/
-	int (*masterjobinit)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag);
-	int (*masterjobend)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag);
-	int (*workerjob)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag, int threadID);
-	void *databag;
-} WorkerBag;
-
-
 int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 		int (*masterjobinit)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag),
 		int (*masterjobend)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag),
 		int (*workerjob)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag, int threadID)
 );
-int MWFWorkerJobCheckInterrupt();
+int MWFWorkerJobCheckInterrupt(int threadID); /** returns a non zero val if an interrupt signal has been caught**/
 
 
 

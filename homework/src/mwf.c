@@ -9,6 +9,24 @@
 #include "utilities.h"
 #include "mwf.h"
 
+/**
+ * Local worker bag structure
+ */
+typedef struct WorkerBag {
+	int ID; /** worker thread ID **/
+	int status; /** status code **/
+	int command; /** command code **/
+	int jobnumber;
+	int itercount;
+	pthread_mutex_t *psynchro; /** mutex pointer for communication with the master thread **/
+	pthread_mutex_t *poutputmutex; /** mutex pointer for outputing text to the console**/
+	int (*masterjobinit)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag);
+	int (*masterjobend)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag);
+	int (*workerjob)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag, int threadID);
+	void *databag;
+} WorkerBag;
+
+
 static WorkerBag **pwbagproxy = NULL;
 static int numworkersproxy = 0;
 static char *deadstatus = NULL;
