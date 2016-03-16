@@ -1,8 +1,6 @@
 #ifndef POWER_H
 #define POWER_H
 
-#define NOMEMORY 100
-
 
 typedef struct PowerBag {
 	int n;
@@ -21,7 +19,7 @@ typedef struct PowerBag {
 
 
 
-void PWRFree(void **paddress);
+
 int PWRLoadCov(char *filename, int *pn, double **pmatrix);
 int PWRAllocBag(int n, int r, double *covmatrix, powerbag **ppbag, double scale, double tolerance);
 void PWRFreeBag(powerbag **ppbag);

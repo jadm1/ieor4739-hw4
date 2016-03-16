@@ -1,7 +1,6 @@
 #ifndef MWF_H
 #define MWF_H
 
-#define NOMEMORY 100
 
 #define WAITING 100
 #define WORKING 101
@@ -34,7 +33,6 @@ typedef struct WorkerBag {
 } WorkerBag;
 
 
-void MWFFree(void **paddress);
 int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 		int (*masterjobinit)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag),
 		int (*masterjobend)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag),

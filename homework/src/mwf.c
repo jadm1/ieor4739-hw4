@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <signal.h>
+#include "utilities.h"
 #include "mwf.h"
 
 static WorkerBag **pwbagproxy = NULL;
@@ -20,19 +21,6 @@ void handlesigint(int i);
 void* WorkerThread(void *voidedwbag);
 
 
-void MWFFree(void **paddress)
-{
-	void *address = *paddress;
-
-	if (address == NULL) goto BACK;
-
-	/**printf("freeing array at %p\n", address);**/
-	free(address);
-	address = NULL; /** prevents double freeing **/
-
-	BACK:
-	*paddress = address;
-}
 
 void handlesigint(int signal)
 {
@@ -285,9 +273,9 @@ int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 	 */
 	for(j = 0; j < numworkers; j++){
 		wbag = pwbag[j];
-		MWFFree((void**)&pwbag[j]);
+		UTLFree((void**)&pwbag[j]);
 	}
-	MWFFree((void**)&pwbag);
+	UTLFree((void**)&pwbag);
 
 
 

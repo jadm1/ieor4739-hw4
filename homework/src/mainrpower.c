@@ -5,8 +5,27 @@
 #include <signal.h>
 #include <string.h>
 #include <math.h>
+#include "utilities.h"
 #include "power.h"
 #include "mwf.h"
+
+/*
+ * todo:
+ *
+ * add utilities
+ * maybe add some utility functions
+ *
+ * remove the qcopy member from the PowerBag and do the q qcopy stuff in this file (not in power.c)
+ * make the small optimization
+ *
+ * make commented print code able to work if necessary (maybe add a verbosity flag)
+ *
+ * make code and compilation process portable with windows and mac
+ *
+ * clean the frankwolfe hw code
+ */
+
+
 
 int cheap_rank1_perturb(int n, double *scratch, double *matcopy, double *matrix, unsigned int* pseed, double scale);
 void show_vector(int n, double *vector);
@@ -247,7 +266,7 @@ int main(int argc, char *argv[])
 		pbag = ppbag[j];
 		PWRFreeBag(&pbag);
 	}
-	PWRFree((void**)&ppbag);
+	UTLFree((void**)&ppbag);
 
 	BACK:
 	if (covmatrix != NULL) {
@@ -288,13 +307,6 @@ int cheap_rank1_perturb(int n, double *scratch, double *matcopy, double *matrix,
 
 	return retcode;
 }
-
-
-
-
-
-
-
 
 
 /** print vector **/

@@ -15,7 +15,7 @@ CCCLNFLAGS = $(LIBS)
 CCCFLAGS = 
 
 PROG = rpower
-PROG_OBJ = bin/mainrpower.o bin/mwf.o bin/power.o
+PROG_OBJ = bin/mainrpower.o bin/utilities.o bin/mwf.o bin/power.o
 
 
 all: bin/$(PROG)

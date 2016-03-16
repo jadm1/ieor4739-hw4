@@ -3,6 +3,7 @@
 #include <math.h>
 #include <pthread.h>
 #include <unistd.h>
+#include "utilities.h"
 #include "power.h"
 
 
@@ -15,28 +16,15 @@ void PWRFreeBag(powerbag **ppbag)
 
 	if (pbag == NULL) goto BACK;
 
-	PWRFree((void**)&pbag->vector0);
-	PWRFree((void**)&pbag->qcopy);
-	PWRFree((void**)&pbag);
+	UTLFree((void**)&pbag->vector0);
+	UTLFree((void**)&pbag->qcopy);
+	UTLFree((void**)&pbag);
 
 	BACK:
 	*ppbag = pbag;
 }
 
-/** free an address and set it to NULL to prevent double freeing**/
-void PWRFree(void **paddress)
-{
-	void *address = *paddress;
 
-	if (address == NULL) goto BACK;
-
-	/**printf("freeing array at %p\n", address);**/
-	free(address);
-	address = NULL; /** prevents double freeing **/
-
-	BACK:
-	*paddress = address;
-}
 
 int PWRAllocBag(int n, int r, double *covmatrix, powerbag **ppbag, double scale, double tolerance)
 {
@@ -144,7 +132,7 @@ int PWRLoadCov(char *filename, int *pn, double **pmatrix)
 		printf("read and loaded data for n = %d with code %d\n", n, retcode);
 	}
 	else {
-		PWRFree((void**)&matrix);
+		UTLFree((void**)&matrix);
 		printf("failed to read/load data\n");
 	}
 	*pn = n;
