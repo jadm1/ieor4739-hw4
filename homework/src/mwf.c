@@ -17,7 +17,6 @@ typedef struct WorkerBag {
 	int status; /** status code **/
 	int command; /** command code **/
 	int jobnumber;
-	int itercount;
 	pthread_mutex_t *psynchro; /** mutex pointer for communication with the master thread **/
 	pthread_mutex_t *poutputmutex; /** mutex pointer for outputing text to the console**/
 	int (*masterjobinit)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag);
@@ -32,8 +31,10 @@ static int numworkersproxy = 0;
 static char *deadstatus = NULL;
 static int activeworkers = 0;
 
-/**void (*sigset(int sig, void (*disp)(int)))(int);**/ /** I think some of the symbols are useless **/
-void sigset(int sig, void (*disp)(int));
+#ifdef WIN32
+#define sigset signal
+#endif
+void (*sigset(int sig, void (*disp)(int)))(int);
 void handlesigint(int i);
 
 void* WorkerThread(void *voidedwbag);
@@ -138,7 +139,6 @@ int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 		wbag->psynchro = &psyncmutex[j];
 		wbag->poutputmutex = &outputmutex;
 		wbag->databag = pdatabag[j];
-		wbag->itercount = 0;
 		wbag->masterjobinit = masterjobinit;
 		wbag->masterjobend = masterjobend;
 		wbag->workerjob = workerjob;
@@ -175,7 +175,6 @@ int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 		wbag->command = WORK;
 		wbag->status = WORKING;
 		wbag->jobnumber = theworker;
-		wbag->itercount = 0;
 		pthread_mutex_unlock(&psyncmutex[theworker]);
 
 	}
@@ -203,7 +202,7 @@ int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 				if(scheduledjobs >= quantity){
 					/** tell worker to quit **/
 					/**pthread_mutex_lock(&outputmutex);
-						printf("master: telling worker %d to quit\n", pbag->ID);
+						printf("master: telling worker %d to quit\n", wbag->ID);
 						pthread_mutex_unlock(&outputmutex);**/
 					wbag->command = QUIT;
 					wbag->status = QUIT;
@@ -219,15 +218,15 @@ int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 					pthread_mutex_unlock(&outputmutex);**/
 				gotone = 1;
 			}
-			else if( (wbag->status == WORKING) && (wbag->itercount > 100000)){
+			/**else if( (wbag->status == WORKING) && (wbag->itercount > 100000)){
 				wbag->command = INTERRUPT;
 				pthread_mutex_lock(&outputmutex);
 				printf("master: telling worker %d to interrupt\n", wbag->ID);
 				pthread_mutex_unlock(&outputmutex);
-			}
+			} not keeping track of iterations anymore**/
 			else if(deadstatus[theworker]){
 				/**pthread_mutex_lock(&outputmutex);
-					printf("master: telling worker %d to quit\n", pbag->ID);
+					printf("master: telling worker %d to quit\n", wbag->ID);
 					pthread_mutex_unlock(&outputmutex);**/
 				wbag->command = QUIT;
 				wbag->status = QUIT;
@@ -257,7 +256,6 @@ int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 			pthread_mutex_lock(&psyncmutex[theworker]);
 			wbag->command = WORK;
 			wbag->status = WORKING;
-			wbag->itercount = 0;
 			wbag->jobnumber = scheduledjobs;
 			pthread_mutex_unlock(&psyncmutex[theworker]);
 
@@ -302,7 +300,8 @@ int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 }
 
 
-/** power method algorithm **/
+
+
 void* WorkerThread(void *voidedwbag)
 {
 	WorkerBag *wbag = (WorkerBag *)voidedwbag;
@@ -319,9 +318,9 @@ void* WorkerThread(void *voidedwbag)
 
 
 	for(;;){
-		/**pthread_mutex_lock(pbag->poutputmutex);
-		printf(" ID %d in big loop\n", pbag->ID);
-		pthread_mutex_unlock(pbag->poutputmutex);**/
+		/**pthread_mutex_lock(wbag->poutputmutex);
+		printf(" ID %d in big loop\n", wbag->ID);
+		pthread_mutex_unlock(wbag->poutputmutex);**/
 
 		letsgo = 0;
 		waitcount = 0;
@@ -341,17 +340,17 @@ void* WorkerThread(void *voidedwbag)
 				goto BACK;
 
 			if(0 == waitcount%20){
-				/**pthread_mutex_lock(pbag->poutputmutex);
-				printf("ID %d bag %p: wait %d for signal; right now have %d\n", pbag->ID, (void *) pbag, waitcount, pbag->command);
-				pthread_mutex_unlock(pbag->poutputmutex);**/
+				/**pthread_mutex_lock(wbag->poutputmutex);
+				printf("ID %d bag %p: wait %d for signal; right now have %d\n", wbag->ID, (void *) wbag, waitcount, wbag->command);
+				pthread_mutex_unlock(wbag->poutputmutex);**/
 			}
 			++waitcount;
 
 		}
 
-		/**pthread_mutex_lock(pbag->poutputmutex);
-		printf("ID %d: got signal to start working\n", pbag->ID);
-		pthread_mutex_unlock(pbag->poutputmutex);**/
+		/**pthread_mutex_lock(wbag->poutputmutex);
+		printf("ID %d: got signal to start working\n", wbag->ID);
+		pthread_mutex_unlock(wbag->poutputmutex);**/
 
 
 		/**

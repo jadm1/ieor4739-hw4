@@ -9,25 +9,10 @@
 #include "power.h"
 #include "mwf.h"
 
-/*
- * todo:
- *
- * add utilities
- * maybe add some utility functions
- *
- * make the small optimization
- *
- * make commented print code able to work if necessary (maybe add a verbosity flag)
- *
- * make code and compilation process portable with windows and mac
- *
- * clean the frankwolfe hw code
- */
-
 
 
 int cheap_rank1_perturb(int n, double *scratch, double *matcopy, double *matrix, unsigned int* pseed, double scale);
-void show_vector(int n, double *vector);
+
 
 
 int master_job_init(int jobnumber, pthread_mutex_t *poutputmutex, void* databag);
@@ -58,7 +43,7 @@ int main(int argc, char *argv[])
 
 	double scale;
 	char *cov_filename;
-	double *covmatrix;
+	double *covmatrix = NULL;
 	int r, n;
 	double tolerance;
 
@@ -194,8 +179,9 @@ int main(int argc, char *argv[])
 	UTLFree((void**)&apbag);
 	UTLFree((void**)&papbag);
 
-	BACK:
 	UTLFree((void**)&covmatrix);
+	
+	BACK:
 	return retcode;
 }
 
@@ -250,6 +236,7 @@ int pca_itercallback(void *vdata_itercb, int k, int f, double error) {
 	pthread_mutex_lock(poutputmutex);
 	printf("Job %d at iteration %d, %d-th EigenValue: %g, ", jobnumber, k, f+1, pbag->eigval[f]);
 	printf("  L1(error) = %.9e\n", error);
+	fflush(stdout);
 	pthread_mutex_unlock(poutputmutex);
 
 
@@ -277,6 +264,7 @@ int pca_eigvalcallback(void *vdata_eigvalcb, int k, int f, double error) {
 
 	pthread_mutex_lock(poutputmutex);
 	printf(" Job %d converged with tol %g! at iter %d. %d-th EigenValue: %g\n", jobnumber, pbag->tolerance, k, f+1, pbag->eigval[f]);
+	fflush(stdout);
 	pthread_mutex_unlock(poutputmutex);
 
 	return 0;
@@ -356,16 +344,7 @@ int cheap_rank1_perturb(int n, double *scratch, double *matcopy, double *matrix,
 }
 
 
-/** print vector **/
-void show_vector(int n, double *vector)
-{
-	int j;
 
-	for (j = 0; j < n; j++){
-		printf(" %g", vector[j]);
-	}
-	printf("\n");
-}
 
 
 

@@ -1,14 +1,22 @@
+OS = linux
+#OS = windows
 
-gccopt= gcc -O2 -funroll-loops
-gccdeb= gcc -ggdb -Wall -pedantic
-gppdeb = g++ $(CCDEB) 
-#CCC = $(gccopt)
-CCC = $(gccdeb)
+GCCOPT = gcc -O2 -funroll-loops
+GCCDEB = gcc -ggdb -Wall -pedantic
+
+#CCC = $(GCCOPT)
+CCC = $(GCCDEB)
 
 CFLAGS=
-LINUXLIBS= -lm -lpthread
 
-LIBS= $(LINUXLIBS) 
+ifeq ($(OS),linux)
+  LIBS = -lm -lpthread
+else ifeq ($(OS),windows)
+  LIBS = -lpthreadGC2
+else
+  LIBS = 
+endif
+
 
 CCCLNFLAGS = $(LIBS)
 
@@ -29,3 +37,4 @@ bin/$(PROG): $(PROG_OBJ)
 
 clean:
 	rm bin/*
+	

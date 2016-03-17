@@ -23,7 +23,7 @@ int MWFMasterThread(int quantity, int numworkers, void **pdatabag,
 		int (*masterjobend)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag),
 		int (*workerjob)(int jobnumber, pthread_mutex_t *poutputmutex, void* databag, int threadID)
 );
-int MWFWorkerJobCheckInterrupt(int threadID); /** returns a non zero val if an interrupt signal has been caught**/
+int MWFWorkerJobCheckInterrupt(int threadID); /** returns a non zero val if an interrupt signal has been caught (to use in workerjob)**/
 
 
 

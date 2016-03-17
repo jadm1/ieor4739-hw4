@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <pthread.h>
 #include <unistd.h>
+#ifdef WIN32
+#include <mem.h>
+#else
+#include <memory.h>
+#endif
 #include "utilities.h"
 #include "power.h"
 
@@ -134,7 +138,7 @@ int PWRLoadCov(char *filename, int *pn, double **pmatrix)
 /** Compute a power method iteration **/
 void PWRPCAIteration(int n, double *vector, double *newvector, double *q, double *peigenvalue, double *perror)
 {
-	double norm2 = 0, mult, error;
+	double norm2, mult, error;
 	int i, j;
 
 	/** w_k+1 = Q * w_k **/
@@ -145,16 +149,16 @@ void PWRPCAIteration(int n, double *vector, double *newvector, double *q, double
 		}
 	}
 
-	norm2 = 0;
+	norm2 = 0.0;
 	for(j = 0; j < n; j++)
 		norm2 += newvector[j]*newvector[j];
 
-	mult = 1.0/sqrt(norm2);
+	*peigenvalue = sqrt(norm2);
+	mult = 1.0 / (*peigenvalue);
 
 	for(j = 0; j < n; j++)
 		newvector[j] = newvector[j]*mult;
 
-	*peigenvalue = 1.0/mult;
 
 	PWRComputeError(n, &error, newvector, vector);
 
@@ -189,7 +193,7 @@ void PWRPCA(PowerBag *pbag, unsigned int *prseed,
 ) {
 	int i, j;
 	int n, r;
-	double *vector, *vector0, *newvector;
+	double *vec, *vec0, *nextvec;
 	int retcode = 0;
 	double tolerance, sp;
 
@@ -198,29 +202,30 @@ void PWRPCA(PowerBag *pbag, unsigned int *prseed,
 
 	n = pbag->n;
 	r = pbag->r;
-	vector = pbag->vec;
-	vector0 = pbag->vec0;
-	newvector = pbag->nextvec;
+	vec = pbag->vec;
+	vec0 = pbag->vec0;
+	nextvec = pbag->nextvec;
 	tolerance = pbag->tolerance;
 
 	/** initialize first vector to random**/
 	for(j = 0; j < n*1; j++){
-		vector0[j] = rand_r(prseed)/((double) RAND_MAX);
+		vec0[j] = rand_r(prseed)/((double) RAND_MAX);
 	}
 
 	/** copy Q into Q'  so that we only deal with Q' and afterwards**/
-	for (j = 0; j < n*n; j++)
-		pbag->qprime[j] = pbag->q[j];
+	/**for (j = 0; j < n*n; j++)
+		pbag->qprime[j] = pbag->q[j];**/
+	memcpy((void*)pbag->qprime, (const void*)pbag->q, sizeof(double)*n*n);
 
 	for (f = 0; f < r; f++) {
 		/** copy f-th column vector0 into vector **/
 		for(j = 0; j < n; j++){
-			vector[f*n + j] = vector0[f*n + j];
+			vec[f*n + j] = vec0[f*n + j];
 		}
 		for(k = 0; ; k++) {
 
 			/* showVector(n, vector);*/
-			PWRPCAIteration(n, &vector[f*n], &newvector[f*n], pbag->qprime, &pbag->eigval[f], &error);
+			PWRPCAIteration(n, &vec[f*n], &nextvec[f*n], pbag->qprime, &pbag->eigval[f], &error);
 
 
 			if(error < tolerance) {
@@ -230,7 +235,7 @@ void PWRPCA(PowerBag *pbag, unsigned int *prseed,
 				/** Set Q' = Q' - lambda w w^T **/
 				for(i = 0; i < n; i++){
 					for (j = 0; j < n; j++){
-						pbag->qprime[i*n + j] -= pbag->eigval[f]*vector[f*n + i]*vector[f*n + j];
+						pbag->qprime[i*n + j] -= pbag->eigval[f]*vec[f*n + i]*vec[f*n + j];
 					}
 				}
 
@@ -239,11 +244,11 @@ void PWRPCA(PowerBag *pbag, unsigned int *prseed,
 					/** first compute sp = (w^T w_0)**/
 					sp = 0.0;
 					for (j = 0; j < n; j++) {
-						sp += vector[f*n + j] * vector0[f*n + j];
+						sp += vec[f*n + j] * vec0[f*n + j];
 					}
 					/** Set w'_0 = w_0 - sp * w **/
 					for (j = 0; j < n; j++) {
-						vector0[(f+1)*n + j] = vector0[f*n + j] - sp * vector[f*n + j];
+						vec0[(f+1)*n + j] = vec0[f*n + j] - sp * vec[f*n + j];
 					}
 				}
 
@@ -256,8 +261,6 @@ void PWRPCA(PowerBag *pbag, unsigned int *prseed,
 
 				break;
 			}
-
-			/**pbag->itercount = k;**/  /** well, in this case we don't really need k **/
 
 			if (k % interval_itercb == 0) {
 				if (itercallback != NULL) {
