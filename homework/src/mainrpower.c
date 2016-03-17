@@ -17,7 +17,7 @@ int cheap_rank1_perturb(int n, double *scratch, double *matcopy, double *matrix,
 
 int master_job_init(int jobnumber, pthread_mutex_t *poutputmutex, void* databag);
 int master_job_end(int jobnumber, pthread_mutex_t *poutputmutex, void* databag);
-int worker_job(int jobnumber, pthread_mutex_t *poutputmutex, void* databag, int threadID);
+int pca(int jobnumber, pthread_mutex_t *poutputmutex, void* databag, int threadID);
 
 
 typedef struct AugPowerBag {
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 	/** allocate the power bags **/
 	for (j = 0; j < numworkers; j++) {
 		apbag = papbag[j];
-		if ((retcode = PWRAllocBag(n, r, covmatrix, &apbag->powerbag, scale, tolerance)))
+		if ((retcode = PWRAllocBag(n, r, covmatrix, &apbag->powerbag, tolerance)))
 			goto BACK;
 	}
 
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
 	 * Start the master worker framework
 	 */
 
-	MWFMasterThread(quantity, numworkers, (void**)papbag, master_job_init, master_job_end, worker_job);
+	MWFMasterThread(quantity, numworkers, (void**)papbag, master_job_init, master_job_end, pca);
 
 
 	/**
@@ -271,7 +271,7 @@ int pca_eigvalcallback(void *vdata_eigvalcb, int k, int f, double error) {
 }
 
 
-int worker_job(int jobnumber, pthread_mutex_t *poutputmutex, void* databag, int threadID) {
+int pca(int jobnumber, pthread_mutex_t *poutputmutex, void* databag, int threadID) {
 	AugPowerBag *apbag = (AugPowerBag*)databag;
 	PowerBag *pbag = apbag->powerbag;
 	pcaitercbs data_itercb;

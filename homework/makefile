@@ -22,19 +22,30 @@ CCCLNFLAGS = $(LIBS)
 
 CCCFLAGS = 
 
-PROG = rpower
-PROG_OBJ = bin/mainrpower.o bin/utilities.o bin/mwf.o bin/power.o
+RPOWER = rpower
+RPOWER_OBJ = bin/mainrpower.o bin/utilities.o bin/mwf.o bin/power.o
 
+MYOPT = myopt
+MYOPT_OBJ = bin/myopt.o bin/myobasic.o bin/myoalgo.o bin/utilities.o 
 
-all: bin/$(PROG)
+COVPCA = covpca
+COVPCA_OBJ = bin/pca.o bin/utilities.o bin/mwf.o bin/power.o
+
+all: bin/$(RPOWER) bin/$(MYOPT) bin/$(COVPCA)
 
 bin/%.o: src/%.c
 	@echo compiling $*.c with $(CCC) $(CCCFLAGS)
 	@$(CCC) $(CCCFLAGS) -c $< -o $@
 
-bin/$(PROG): $(PROG_OBJ)
-	$(CCC) $(CCCFLAGS) -o bin/$(PROG) $(PROG_OBJ) $(CCCLNFLAGS)
+bin/$(RPOWER): $(RPOWER_OBJ)
+	$(CCC) $(CCCFLAGS) -o bin/$(RPOWER) $(RPOWER_OBJ) $(CCCLNFLAGS)
+
+bin/$(MYOPT): $(MYOPT_OBJ)
+	$(CCC) $(CCCFLAGS) -o bin/$(MYOPT) $(MYOPT_OBJ) $(CCCLNFLAGS)
+
+bin/$(COVPCA): $(COVPCA_OBJ)
+	$(CCC) $(CCCFLAGS) -o bin/$(COVPCA) $(COVPCA_OBJ) $(CCCLNFLAGS)
 
 clean:
 	rm bin/*
-	
+

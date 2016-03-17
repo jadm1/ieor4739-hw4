@@ -18,7 +18,7 @@ typedef struct PowerBag {
 
 
 int PWRLoadCov(char *filename, int *pn, double **pmatrix);
-int PWRAllocBag(int n, int r, double *covmatrix, PowerBag **ppbag, double scale, double tolerance);
+int PWRAllocBag(int n, int r, double *covmatrix, PowerBag **ppbag, double tolerance);
 void PWRFreeBag(PowerBag **ppbag);
 void PWRPCAIteration(int n, double *vector, double *newvector, double *q, double *peigenvalue, double *perror);
 void PWRPCA(PowerBag *pbag, unsigned int *prseed,

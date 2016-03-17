@@ -29,7 +29,7 @@ void PWRFreeBag(PowerBag **ppbag)
 
 
 
-int PWRAllocBag(int n, int r, double *covmatrix, PowerBag **ppbag, double scale, double tolerance)
+int PWRAllocBag(int n, int r, double *covmatrix, PowerBag **ppbag, double tolerance)
 {
 	int retcode = 0;
 	int i;
