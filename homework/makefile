@@ -19,33 +19,46 @@ endif
 
 
 CCCLNFLAGS = $(LIBS)
-
 CCCFLAGS = 
 
-RPOWER = rpower
-RPOWER_OBJ = bin/mainrpower.o bin/utilities.o bin/mwf.o bin/power.o
+BDIR = bin
+ODIR = obj
 
-MYOPT = myopt
-MYOPT_OBJ = bin/myopt.o bin/myobasic.o bin/myoalgo.o bin/utilities.o 
 
-COVPCA = covpca
-COVPCA_OBJ = bin/pca.o bin/utilities.o bin/mwf.o bin/power.o
 
-all: bin/$(RPOWER) bin/$(MYOPT) bin/$(COVPCA)
+RPOWER = $(BDIR)/rpower
+RPOWER_OBJ = $(ODIR)/mainrpower.o $(ODIR)/utilities.o $(ODIR)/mwf.o $(ODIR)/power.o
 
-bin/%.o: src/%.c
+COVPCA = $(BDIR)/covpca
+COVPCA_OBJ = $(ODIR)/pca.o $(ODIR)/utilities.o $(ODIR)/mwf.o $(ODIR)/power.o
+
+MYOPT = $(BDIR)/myopt
+MYOPT_OBJ = $(ODIR)/myopt.o $(ODIR)/myoalgo.o $(ODIR)/utilities.o 
+
+PFSIMUL = $(BDIR)/pfsimul
+PFSIMUL_OBJ = $(ODIR)/utilities.o $(ODIR)/portfoliosimul.o $(ODIR)/mwf.o
+
+
+
+all: $(RPOWER) $(COVPCA) $(MYOPT) $(PFSIMUL)
+
+$(ODIR)/%.o: src/%.c
 	@echo compiling $*.c with $(CCC) $(CCCFLAGS)
 	@$(CCC) $(CCCFLAGS) -c $< -o $@
 
-bin/$(RPOWER): $(RPOWER_OBJ)
-	$(CCC) $(CCCFLAGS) -o bin/$(RPOWER) $(RPOWER_OBJ) $(CCCLNFLAGS)
+$(RPOWER): $(RPOWER_OBJ)
+	$(CCC) $(CCCFLAGS) -o $(RPOWER) $(RPOWER_OBJ) $(CCCLNFLAGS)
 
-bin/$(MYOPT): $(MYOPT_OBJ)
-	$(CCC) $(CCCFLAGS) -o bin/$(MYOPT) $(MYOPT_OBJ) $(CCCLNFLAGS)
+$(COVPCA): $(COVPCA_OBJ)
+	$(CCC) $(CCCFLAGS) -o $(COVPCA) $(COVPCA_OBJ) $(CCCLNFLAGS)
 
-bin/$(COVPCA): $(COVPCA_OBJ)
-	$(CCC) $(CCCFLAGS) -o bin/$(COVPCA) $(COVPCA_OBJ) $(CCCLNFLAGS)
+$(MYOPT): $(MYOPT_OBJ)
+	$(CCC) $(CCCFLAGS) -o $(MYOPT) $(MYOPT_OBJ) $(CCCLNFLAGS)
+
+$(PFSIMUL): $(PFSIMUL_OBJ)
+	$(CCC) $(CCCFLAGS) -o $(PFSIMUL) $(PFSIMUL_OBJ) $(CCCLNFLAGS)
 
 clean:
-	rm bin/*
+	rm $(RPOWER) $(COVPCA) $(MYOPT) $(PFSIMUL) -f
+	rm $(ODIR)/* -f
 

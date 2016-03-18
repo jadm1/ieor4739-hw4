@@ -10,6 +10,12 @@ typedef struct grad_sort_struct {
 } grad_sort_struct;
 
 typedef struct myo{
+	int max_iter;
+	double mingap;
+	int verbose;
+	double cost;
+	double lastcost;
+
 	int n;
 	int f;
 	int iteration;
@@ -38,8 +44,8 @@ typedef struct myo{
 #define NOMEM 100
 #define DATAERROR1 101
 
-int myoGetmyoFromFile(myo **ppmyo, char *filename);
-int myocreatemyo(myo **pmyo);
+int myoGetmyoFromFile(myo *pmyo, char *filename);
+int myocreatemyo(myo **ppmyo);
 void myokillmyo(myo **ppmyo);
 int myoalgo(myo *pmyo);
 

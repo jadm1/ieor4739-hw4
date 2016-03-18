@@ -2,7 +2,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/times.h>
+#include <unistd.h>
+#endif
 #include "utilities.h"
+
+
+char does_it_exist(char *filename)
+{
+#ifdef WIN32
+	return 0;
+#else
+	struct stat buf;
+
+	/* the function stat returns 0 if the file exists*/
+
+	if (0 == stat(filename, &buf)){
+		return 1;
+	}
+	else return 0;
+#endif
+}
+
+void gotosleep(int numseconds)
+{
+#ifdef WIN32
+	Sleep(numseconds*1000);
+#else
+	sleep(numseconds);
+#endif
+}
+
+void erasefile(char *filename)
+{
+	remove(filename);
+}
+
+
+double drawnormal_r(unsigned int *prseed)
+{
+	double U1, U2, drawn, pi;
+
+	pi = 3.141592653589793;
+
+	U1 = rand_r(prseed)/((double) RAND_MAX);
+	U2 = rand_r(prseed)/((double) RAND_MAX);
+
+	drawn = sqrt(-2*log(U1))*cos(2*pi*U2);
+
+	return drawn;
+}
 
 /**
  * Safe freeing
@@ -35,62 +90,43 @@ void UTLShowVector(int n, double *vector)
 }
 
 
-char *Ggettimestamp(void)
+char *UTLGetTimeStamp(void)
 {
-  time_t timestamp;
+	time_t timestamp;
 
-  timestamp = time(0);
-  return (char *) ctime(&timestamp);
+	timestamp = time(0);
+	return (char *) ctime(&timestamp);
+}
+
+
+
+int UTLTicks_ms()
+{
+#ifdef WIN32
+	return (int)GetTickCount();
+#else
+	struct tms tm;
+	return (int)(times(&tm) * 10);
+#endif
 }
 
 
 
 
+
+
 #ifdef WIN32
-/* Reentrant random function frm POSIX.1c.
-   Copyright (C) 1996, 1999 Free Software Foundation, Inc.
-   This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@cygnus.com <mailto:drepper@cygnus.com>>, 1996.
 
-   The GNU C Library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   The GNU C Library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-   02111-1307 USA.  */
-   
-/* This algorithm is mentioned in the ISO C standard, here extended
-   for 32 bits.  */
 int rand_r (unsigned int *seed)
 {
-    unsigned int next = *seed;
-    int result;
+	int result;
+	unsigned int next = *seed;
 
-    next *= 1103515245;
-    next += 12345;
-    result = (unsigned int) (next / 65536) % 2048;
+	next = next * 1103515245 + 12345;
+	result = (int)(next >> 16) & RAND_MAX; /** result =  (int)(next / 65536) % 32768; **/
 
-    next *= 1103515245;
-    next += 12345;
-    result <<= 10;
-    result ^= (unsigned int) (next / 65536) % 1024;
-
-    next *= 1103515245;
-    next += 12345;
-    result <<= 10;
-    result ^= (unsigned int) (next / 65536) % 1024;
-
-    *seed = next;
-
-    return result;
+	*seed = next;
+	return result;
 }
 
 #endif
