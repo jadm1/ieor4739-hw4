@@ -12,7 +12,6 @@
 #include <math.h>
 #include "utilities.h"
 #include "power.h"
-#include "mwf.h"
 
 
 

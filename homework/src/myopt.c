@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	retcode = myoalgo(pmyo);
 
 	/** final output**/
-	myo_showx(pmyo, 0, pmyo->n-1);
+	/**myo_showx(pmyo, 0, pmyo->n-1);**/
 
 	output_f = fopen(argv[2], "w");
 	fprintf(output_f, "n %d\n", pmyo->n);

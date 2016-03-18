@@ -7,7 +7,7 @@ GCCDEB = gcc -ggdb -Wall -pedantic
 #CCC = $(GCCOPT)
 CCC = $(GCCDEB)
 
-CFLAGS=
+CFLAGS = 
 
 ifeq ($(OS),linux)
   LIBS = -lm -lpthread
@@ -19,24 +19,20 @@ endif
 
 
 CCCLNFLAGS = $(LIBS)
-CCCFLAGS = 
+CCCFLAGS = -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label
 
 BDIR = bin
 ODIR = obj
 
 
-
-RPOWER = $(BDIR)/rpower
-RPOWER_OBJ = $(ODIR)/mainrpower.o $(ODIR)/utilities.o $(ODIR)/mwf.o $(ODIR)/power.o
-
 COVPCA = $(BDIR)/covpca
-COVPCA_OBJ = $(ODIR)/pca.o $(ODIR)/utilities.o $(ODIR)/mwf.o $(ODIR)/power.o
+COVPCA_OBJ = $(ODIR)/pca.o $(ODIR)/utilities.o $(ODIR)/power.o
 
 MYOPT = $(BDIR)/myopt
 MYOPT_OBJ = $(ODIR)/myopt.o $(ODIR)/myoalgo.o $(ODIR)/utilities.o 
 
 PFSIMUL = $(BDIR)/pfsimul
-PFSIMUL_OBJ = $(ODIR)/utilities.o $(ODIR)/portfoliosimul.o $(ODIR)/mwf.o
+PFSIMUL_OBJ = $(ODIR)/utilities.o $(ODIR)/portfoliosimul.o
 
 
 
@@ -45,9 +41,6 @@ all: $(RPOWER) $(COVPCA) $(MYOPT) $(PFSIMUL)
 $(ODIR)/%.o: src/%.c
 	@echo compiling $*.c with $(CCC) $(CCCFLAGS)
 	@$(CCC) $(CCCFLAGS) -c $< -o $@
-
-$(RPOWER): $(RPOWER_OBJ)
-	$(CCC) $(CCCFLAGS) -o $(RPOWER) $(RPOWER_OBJ) $(CCCLNFLAGS)
 
 $(COVPCA): $(COVPCA_OBJ)
 	$(CCC) $(CCCFLAGS) -o $(COVPCA) $(COVPCA_OBJ) $(CCCLNFLAGS)
