@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo --- Myopt ---
-bin/myopt data/myoinput.txt data/x.txt -m 100 -t 1e-6 # get an optimal portfolio allocation
+bin/myopt data/myoinput.txt data/x.txt -m 1000 -t 1e-6 # get an optimal portfolio allocation
 echo ---------------
 echo --- PnL simulations ---
-bin/pfsimul data/x.txt data/p.txt pf_values.txt pf_returns.txt -v -q 10000 -w 4
+bin/pfsimul data/x.txt data/p.txt -ov runs/pf_values.txt -or runs/pf_returns.txt -q 1000000 -w 4 -b 1000000000 -p 504 -v

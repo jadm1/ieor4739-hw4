@@ -14,8 +14,11 @@
 #include "utilities.h"
 #include "pf.h"
 
+/** load optimized portfolio allocation from file **/
 int load_initial_positions(char* filename, double **px, int* pn, int **pindices, double nonzero_threshold);
+/** load prices matrix from file **/
 int load_prices(char* filename, double **pp, int n, int *indices, int *pt, int max_t);
+/** compute the average of a double vector **/
 double average(int n, double *v);
 
 
@@ -29,11 +32,14 @@ int main(int argc, char **argv) {
 	char *x_filename, *p_filename;
 	char *pfv_filename, *pfr_filename;
 	FILE *pfv_f, *pfr_f;
+	int ov, or;
 	double s;
 
 	/**
 	 * Program variables
 	 */
+	int verbose;
+	double B;
 	int num_sim, num_workers, max_t;
 	WorkerBag *wbag = NULL;
 	pthread_t *pthread = NULL;
@@ -55,11 +61,6 @@ int main(int argc, char **argv) {
 	int t; /** number of periods **/
 	Portfolio **ppf = NULL;
 
-	/**
-	 * parameters
-	 */
-	int verbose;
-	double B;
 
 	/**
 	 * Default parameter values
@@ -69,16 +70,18 @@ int main(int argc, char **argv) {
 	num_workers = 1;
 	max_t = 10000;
 	B = 1000000000.0;
+	ov = 0;
+	or = 0;
 
 
 	/**
 	 * Collect parameters from command line
 	 */
-	if(argc < 5) {
-		printf("usage: %s <portfolio positions file> <prices history file> <portfolio values output file> <portfolio returns output file> [-q simulations number] [-w workers] [-p max periods] [-v verbose]\n", argv[0]);
+	if(argc < 3) {
+		printf("usage: %s <portfolio positions file> <prices history file> [ -ov portfolio values output file] [ -or portfolio returns output file] [-q simulations number] [-w workers] [-p max periods] [-v verbose] [-b initial value]\n", argv[0]);
 		retcode = 1; goto BACK;
 	}
-	for(j = 5; j < argc; j++){
+	for(j = 3; j < argc; j++){
 		if (0 == strcmp(argv[j], "-v")){
 			j += 0;
 			verbose = 1;
@@ -95,6 +98,20 @@ int main(int argc, char **argv) {
 			j += 1;
 			max_t = atoi(argv[j]);
 		}
+		else if (0 == strcmp(argv[j],"-b")){
+			j += 1;
+			B = atof(argv[j]);
+		}
+		else if (0 == strcmp(argv[j],"-ov")){
+			j += 1;
+			pfv_filename = argv[j];
+			ov = 1;
+		}
+		else if (0 == strcmp(argv[j],"-or")){
+			j += 1;
+			pfr_filename = argv[j];
+			or = 1;
+		}
 		else{
 			printf("bad option %s\n", argv[j]); retcode = 1; goto BACK;
 		}
@@ -107,9 +124,6 @@ int main(int argc, char **argv) {
 
 	x_filename = argv[1];
 	p_filename = argv[2];
-	pfv_filename = argv[3];
-	pfr_filename = argv[4];
-
 
 
 	printf("loading positions from %s\n", x_filename);
@@ -226,32 +240,34 @@ int main(int argc, char **argv) {
 
 	pthread_mutex_destroy(&outputmutex);
 	delta_t = UTLTicks_ms() - delta_t;
-	
+
 	printf("P&L simulations done in %.1f seconds\n", delta_t/1000.0);
-	
+
 	printf("Averaging over all simulations\n");
 	avg_pf_value = average(num_sim, pf_values);
 	avg_pf_return = average(num_sim, pf_returns);
 	printf("Average final value: %g\n", avg_pf_value);
 	printf("Average daily return: %g %%\n", 100.0*avg_pf_return);
-	
-	
-	printf("saving results...\n");
 
-	pfv_f = fopen(pfv_filename, "w");
-	fprintf(pfv_f, "nsim: %d\n", num_sim);
-	for (j = 0; j < num_sim; j++) {
-		fprintf(pfv_f, "%g\n", pf_values[j]);
-	}
-	fclose(pfv_f);
 
-	pfr_f = fopen(pfr_filename, "w");
-	fprintf(pfr_f, "nsim: %d\n", num_sim);
-	for (j = 0; j < num_sim; j++) {
-		fprintf(pfr_f, "%g\n", pf_returns[j]);
+	if (ov) {
+		printf("saving values...\n");
+		pfv_f = fopen(pfv_filename, "w");
+		fprintf(pfv_f, "nsim: %d\n", num_sim);
+		for (j = 0; j < num_sim; j++) {
+			fprintf(pfv_f, "%g\n", pf_values[j]);
+		}
+		fclose(pfv_f);
 	}
-	fclose(pfr_f);
-	
+	if (or) {
+		printf("saving returns...\n");
+		pfr_f = fopen(pfr_filename, "w");
+		fprintf(pfr_f, "nsim: %d\n", num_sim);
+		for (j = 0; j < num_sim; j++) {
+			fprintf(pfr_f, "%g\n", pf_returns[j]);
+		}
+		fclose(pfr_f);
+	}
 	if (verbose) {
 		printf("freeing memory ...\n");
 	}
@@ -398,14 +414,14 @@ int load_prices(char* filename, double **pp, int n, int *indices, int *pt, int m
 double average(int n, double *v) {
 	int i;
 	double r;
-	
+
 	r = 0.0;
 	for (i = 0; i < n; i++) {
 		r += v[i];
 	}
-	
+
 	r /= n;
-	
+
 	return r;
 }
 

@@ -44,8 +44,7 @@ void* pfworker(void * arg) {
 
 int portfolio_simulation(int sim, unsigned int *prseed, pthread_mutex_t *poutputmutex, Portfolio *pf, int threadID) {
 	int retcode = 0;
-	int n;
-	int t;
+	int n, t;
 	double *p, *q, *delta, *sigma;
 	int i, j, k;
 	double pf_v, pf_v_old; /** portfolio value **/

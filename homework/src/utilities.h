@@ -2,7 +2,7 @@
  * utilities.h
  *
  *  Created on: Mar 16, 2016
- *      Author: root
+ *      Author: jadm
  */
 
 #ifndef UTILITIES_H
