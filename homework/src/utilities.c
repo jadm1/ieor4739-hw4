@@ -51,11 +51,11 @@ double drawnormal_r(unsigned int *prseed)
 
 	pi = 3.141592653589793;
 
-	U1 = rand_r(prseed)/((double) RAND_MAX);
-	U2 = rand_r(prseed)/((double) RAND_MAX);
+	U1 = (rand_r(prseed)+1)/((double)((unsigned int)RAND_MAX+1)); /** we don't want a value of 0 otherwise drawn = +oo **/
+	U2 = (rand_r(prseed)+1)/((double)((unsigned int)RAND_MAX+1));
 
-	drawn = sqrt(-2*log(U1))*cos(2*pi*U2);
-
+	drawn = sqrt(-2*log(U1))*cos(2*pi*U2); 
+	
 	return drawn;
 }
 
@@ -112,21 +112,18 @@ int UTLTicks_ms()
 
 
 
-
-
-
 #ifdef WIN32
 
 int rand_r (unsigned int *seed)
 {
-	int result;
+	unsigned int result;
 	unsigned int next = *seed;
 
 	next = next * 1103515245 + 12345;
-	result = (int)(next >> 16) & RAND_MAX; /** result =  (int)(next / 65536) % 32768; **/
+	result = (next >> 16) & RAND_MAX; /** result = (next / 65536) % 32768; **/
 
 	*seed = next;
-	return result;
+	return (int)result;
 }
 
 #endif

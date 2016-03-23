@@ -1,8 +1,8 @@
 /*
- * portfoliosimul.c
+ * pfsimul.c
  *
  *  Created on: Mar 17, 2016
- *      Author: root
+ *      Author: jadm
  */
 
 
@@ -12,133 +12,11 @@
 #include <math.h>
 #include <pthread.h>
 #include "utilities.h"
-
-
-/**
- * B=v0: initial portfolio value
- * v: portfolio value
- * x: position
- * q: quantity of asset
- * w: price of all position in a given asset
- * p: price of 1 unit of a given asset
- *
- * wt = q pt
- * xt = wt / vt
- * vt = sum_n wt = sum_n q pt
- *
- * q = w0/p0 = x0 v0 /p0 =  x0  B/p0
- *
- */
-
-
-typedef struct Portfolio {
-	int n; /** number of assets (whose quantities are non 0) **/
-	int t; /** number of periods **/
-	double B; /** initial portfolio value **/
-	double *p; /** Matrix of prices (unperturbed) **/
-	double *q; /** Array of inital fixed quantities **/
-	double *delta; /** avg changes **/
-	double *sigma; /** std changes **/
-	double *pf_values; /** pointer to the output array of portfolio values**/
-	double *pf_returns; /** pointer to the output array of portfolio returns**/
-} Portfolio;
-
-typedef struct WorkerBag {
-	int ID; /** ID (for worker threads) **/
-	int num_sim; /** number of simulations **/
-	int num_workers; /** number of workers **/
-	pthread_mutex_t *poutputmutex;
-	Portfolio *pf; /** worker's portfolio non shared variables **/
-} WorkerBag;
-
+#include "pf.h"
 
 int load_initial_positions(char* filename, double **px, int* pn, int **pindices, double nonzero_threshold);
 int load_prices(char* filename, double **pp, int n, int *indices, int *pt, int max_t);
-int compute_avg_changes(double *p, int n, int t, double **pdelta);
-int compute_std_changes(double *p, int n, int t, double *delta, double **psigma);
-
-int portfolio_create(Portfolio **ppf, int n, int t, double *x, double *p, double *delta, double *sigma, double B, double *pf_values, double *pf_returns);
-void portfolio_delete(Portfolio **ppf);
-int portfolio_create_array(int number, Portfolio*** pppf, int n, int t, double *x, double *p, double *delta, double *sigma, double B, double *pf_values, double *pf_returns);
-void portfolio_delete_array(int number, Portfolio ***pppf);
-
-
-
-
-
-
-int portfolio_simulation(int sim, unsigned int *prseed, pthread_mutex_t *poutputmutex, void* databag, int threadID) {
-	int retcode = 0;
-
-	Portfolio *pf = (Portfolio*)databag;
-	int n;
-	int t;
-	double *p, *q, *delta, *sigma;
-	int i, j, k;
-	double pf_v, pf_v_old; /** portfolio value **/
-	double pf_return;
-
-	n = pf->n;
-	t = pf->t;
-	p = pf->p;
-	q = pf->q;
-	delta = pf->delta;
-	sigma = pf->sigma;
-
-	for (j = 0; j < t; j++) {
-		pf_v = 0.0;
-		for (i = 0; i < n; i++) {
-			pf_v += (p[i*t + j] + (sigma[i]*drawnormal_r(prseed) + delta[i])) * q[i]; /** add current value of the i-th asset + the perturbation **/
-		}
-		if (j > 0) {
-			pf_return += (pf_v - pf_v_old) / pf_v_old;
-		}
-		pf_v_old = pf_v;
-	}
-
-	pf_return /= (t - 1);
-
-	pf->pf_values[sim] = pf_v;
-	pf->pf_returns[sim] = pf_return;
-
-
-	return retcode;
-}
-
-void* worker(void * arg) {
-	WorkerBag *wbag = (WorkerBag*)arg;
-	Portfolio *pf = wbag->pf;
-	pthread_mutex_t *poutputmutex = wbag->poutputmutex;
-	int ID = wbag->ID;
-	int num_sim = wbag->num_sim;
-	int num_workers = wbag->num_workers;
-	int start, end, num_sim_local;
-	int sim;
-	unsigned int rseed = ID;
-
-	/** spread the simulations evenly over worker threads **/
-	start = ID * (num_sim/num_workers);
-	if (ID < num_workers-1)
-		end = (ID+1) * (num_sim/num_workers) - 1;
-	else
-		end = num_sim - 1;
-	num_sim_local = end - start + 1;
-
-	pthread_mutex_lock(poutputmutex);
-	printf("Worker %d started. %d sims assigned: from %d to %d \n", ID, num_sim_local, start, end);
-	pthread_mutex_unlock(poutputmutex);
-
-	for (sim = start; sim <= end; sim++) {
-		portfolio_simulation(sim, &rseed, poutputmutex, (void*)pf, ID);
-		if (sim % (num_sim_local/10) == 0) {
-			printf("W %d: simulation %d, portfolio value: %g, avg daily return: %g %%\n", ID, sim, pf->pf_values[sim], pf->pf_returns[sim]*100);
-		}
-	}
-
-
-	return NULL;
-}
-
+double average(int n, double *v);
 
 
 int main(int argc, char **argv) {
@@ -146,6 +24,7 @@ int main(int argc, char **argv) {
 	 * utility variables
 	 */
 	int retcode = 0;
+	int delta_t;
 	int i, j;
 	char *x_filename, *p_filename;
 	char *pfv_filename, *pfr_filename;
@@ -169,6 +48,8 @@ int main(int argc, char **argv) {
 	 */
 	double *pf_values = NULL;
 	double *pf_returns = NULL;
+	double avg_pf_value;
+	double avg_pf_return;
 
 	int n; /** number of assets **/
 	int t; /** number of periods **/
@@ -232,7 +113,7 @@ int main(int argc, char **argv) {
 
 
 	printf("loading positions from %s\n", x_filename);
-	retcode = load_initial_positions(x_filename, &x, &n, &indices, 1e-7);
+	retcode = load_initial_positions(x_filename, &x, &n, &indices, 1e-10);
 	if (retcode != 0) {
 		printf("positions could not be loaded !\n"); goto BACK;
 	}
@@ -316,6 +197,7 @@ int main(int argc, char **argv) {
 		retcode = NOMEMORY; goto BACK;
 	}
 
+	delta_t = UTLTicks_ms();
 	pthread_mutex_init(&outputmutex, NULL);
 
 	for(j = 0; j < num_workers; j++) {
@@ -327,7 +209,7 @@ int main(int argc, char **argv) {
 		pthread_mutex_lock(&outputmutex);
 		printf("Launching thread for worker %d\n", j);
 		pthread_mutex_unlock(&outputmutex);
-		pthread_create(&pthread[j], NULL, &worker, (void *)&wbag[j]);
+		pthread_create(&pthread[j], NULL, &pfworker, (void *)&wbag[j]);
 	}
 
 	pthread_mutex_lock(&outputmutex);
@@ -343,7 +225,17 @@ int main(int argc, char **argv) {
 	}
 
 	pthread_mutex_destroy(&outputmutex);
-
+	delta_t = UTLTicks_ms() - delta_t;
+	
+	printf("P&L simulations done in %.1f seconds\n", delta_t/1000.0);
+	
+	printf("Averaging over all simulations\n");
+	avg_pf_value = average(num_sim, pf_values);
+	avg_pf_return = average(num_sim, pf_returns);
+	printf("Average final value: %g\n", avg_pf_value);
+	printf("Average daily return: %g %%\n", 100.0*avg_pf_return);
+	
+	
 	printf("saving results...\n");
 
 	pfv_f = fopen(pfv_filename, "w");
@@ -359,9 +251,10 @@ int main(int argc, char **argv) {
 		fprintf(pfr_f, "%g\n", pf_returns[j]);
 	}
 	fclose(pfr_f);
-
-	printf("freeing memory ...\n");
-
+	
+	if (verbose) {
+		printf("freeing memory ...\n");
+	}
 	BACK:
 
 	portfolio_delete_array(num_workers, &ppf);
@@ -502,180 +395,17 @@ int load_prices(char* filename, double **pp, int n, int *indices, int *pt, int m
 }
 
 
-int compute_avg_changes(double *p, int n, int t, double **pdelta) {
-	int retcode = 0;
-	int i, k;
-	double change;
-	double *delta = NULL;
-
-	delta = (double *) calloc(n, sizeof(double));
-	if (delta == NULL) {
-		retcode = NOMEMORY; goto BACK;
-	}
-
-	for (i = 0; i < n; i++) {
-		delta[i] = 0;
-		for (k = 0; k < (t - 1); k++) {
-			change = (p[i * t + k + 1] - p[i * t + k]); /** / p[i * t + k]; (for returns)**/
-			delta[i] += change;
-		}
-		delta[i] /= (t - 1);
-	}
-
-	if (pdelta != NULL)
-		*pdelta = delta;
-	BACK:
-	if (retcode != 0) {
-		UTLFree((void**)&delta);
-	}
-	return retcode;
-}
-
-int compute_std_changes(double *p, int n, int t, double *delta, double **psigma) {
-	int retcode = 0;
-	int i, k;
-	double change;
-	double *sigma = NULL;
-
-	sigma = (double *) calloc(n, sizeof(double));
-	if (sigma == NULL) {
-		retcode = NOMEMORY; goto BACK;
-	}
-
-
-	for (i = 0; i < n; i++) {
-		sigma[i] = 0;
-		for (k = 0; k < t - 1; k++) {
-			change = (p[i * t + k + 1] - p[i * t + k]);
-			sigma[i] += (change - delta[i]) * (change - delta[i]);
-		}
-		sigma[i] /= (t - 1); /** t - 2 for unbiased estimator**/
-		sigma[i] = sqrt(sigma[i]); /** std = sqrt(var) **/
-	}
-
-
-	if (psigma != NULL)
-		*psigma = sigma;
-	BACK:
-	if (retcode != 0) {
-		UTLFree((void**)&sigma);
-	}
-	return retcode;
-}
-
-
-
-int portfolio_create(Portfolio **ppf, int n, int t, double *x, double *p, double *delta, double *sigma, double B, double *pf_values, double *pf_returns) {
-	int retcode = 0;
-	int i, j;
-	Portfolio *pf = NULL;
-	void *memory;
-
-	pf = (Portfolio *)calloc(1, sizeof(Portfolio));
-	if (pf == NULL) {
-		retcode = NOMEMORY; goto BACK;
-	}
-
-	pf->n = n;
-	pf->t = t;
-	pf->B = B;
-	/**
-	 * allocate packed memory
-	 */
-	memory = malloc(n*sizeof(double) +
-			n*t*sizeof(double) +
-			n*sizeof(double) +
-			n*sizeof(double)
-	);
-	if (memory == NULL) {
-		retcode = NOMEMORY; goto BACK;
-	}
-	pf->q = (double*)memory;
-	pf->p = (double*)&pf->q[n];
-	pf->delta = (double*)&pf->p[n*t];
-	pf->sigma = (double*)&pf->delta[n];
-
-
-	/**
-	 * copy memory
-	 */
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < t; j++) {
-			pf->p[i*t + j] = p[i*t + j];
-		}
-	}
-	for (i = 0; i < n; i++) {
-		pf->delta[i] = delta[i];
-	}
-	for (i = 0; i < n; i++) {
-		pf->sigma[i] = sigma[i];
-	}
-	pf->pf_values = pf_values;
-	pf->pf_returns = pf_returns;
-
-	/** compute the initial quantities **/
-	for (i = 0; i < n; i++) {
-		pf->q[i] = x[i] * (pf->B / pf->p[i*t + 0]);
-	}
-
-	if (ppf != NULL)
-		*ppf = pf;
-	BACK:
-	if (retcode != 0) {
-		portfolio_delete(&pf);
-	}
-	return retcode;
-}
-
-void portfolio_delete(Portfolio **ppf) {
-	Portfolio *pf = *ppf;
-	void *memory;
-	if (pf == NULL)
-		return;
-
-	memory = (void*)pf->q;
-	UTLFree(&memory);
-
-	UTLFree((void**)&pf);
-	*ppf = NULL;
-}
-
-
-int portfolio_create_array(int number, Portfolio*** pppf, int n, int t, double *x, double *p, double *delta, double *sigma, double B, double *pf_values, double *pf_returns) {
-	int retcode = 0;
+double average(int n, double *v) {
 	int i;
-	Portfolio **ppf = NULL;
-
-	ppf = (Portfolio **)calloc(number, sizeof(Portfolio*));
-	if (ppf == NULL) {
-		retcode = NOMEMORY; goto BACK;
+	double r;
+	
+	r = 0.0;
+	for (i = 0; i < n; i++) {
+		r += v[i];
 	}
-
-	for (i = 0; i < number; i++) {
-		retcode = portfolio_create(&ppf[i], n, t, x, p, delta, sigma, B, pf_values, pf_returns);
-		if (retcode != 0)
-			goto BACK;
-	}
-
-	if (pppf != NULL)
-		*pppf = ppf;
-	BACK:
-	if (retcode != 0) {
-		portfolio_delete_array(number, pppf);
-	}
-	return retcode;
-}
-
-void portfolio_delete_array(int number, Portfolio ***pppf) {
-	int i;
-	Portfolio **ppf = *pppf;
-	if (ppf == NULL)
-		return;
-
-	for (i = 0; i < number; i++)
-		portfolio_delete(&ppf[i]);
-
-	UTLFree((void**)&ppf);
-	*pppf = NULL;
+	
+	r /= n;
+	
+	return r;
 }
 

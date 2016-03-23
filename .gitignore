@@ -4,3 +4,8 @@
 homework/.cproject
 homework/.project
 homework/.settings
+homework/*.bat
+homework/data-linux
+homework/data-windows
+homework/dlls
+

@@ -115,23 +115,20 @@ print "indices: " + str(s)
 # initialize V
 V = np.ndarray(shape=(fN, N))
 
-# OLS linear regression
-print "Linear regression ..."
-
-
-rsquared = 0.0
 
 x = np.ndarray(shape=(fN, T))
 for i in xrange(fN):
     x[i,:] = returns[s[i]]
-X = np.transpose(x)
 
+# OLS linear regression
+print "Linear regression ..."
+rsquared = 0.0
+X = np.transpose(x)
 for i in xrange(N): # do regression with all assets to get all coefficients
     results = sm.OLS(returns[i], X).fit()
     # set V's i-th column to be the coefficients returned by the linear regression
     V[:, i] = results.params
     rsquared += results.rsquared
-
 print "R2:" + str(rsquared)
 
 # compute other matrices

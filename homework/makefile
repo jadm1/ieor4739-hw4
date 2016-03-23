@@ -4,8 +4,8 @@ OS = linux
 GCCOPT = gcc -O2 -funroll-loops
 GCCDEB = gcc -ggdb -Wall -pedantic
 
-#CCC = $(GCCOPT)
-CCC = $(GCCDEB)
+CCC = $(GCCOPT)
+#CCC = $(GCCDEB)
 
 CFLAGS = 
 
@@ -19,7 +19,7 @@ endif
 
 
 CCCLNFLAGS = $(LIBS)
-CCCFLAGS = -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label
+CCCFLAGS = # -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label
 
 BDIR = bin
 ODIR = obj
@@ -32,7 +32,7 @@ MYOPT = $(BDIR)/myopt
 MYOPT_OBJ = $(ODIR)/myopt.o $(ODIR)/myoalgo.o $(ODIR)/utilities.o 
 
 PFSIMUL = $(BDIR)/pfsimul
-PFSIMUL_OBJ = $(ODIR)/utilities.o $(ODIR)/portfoliosimul.o
+PFSIMUL_OBJ = $(ODIR)/utilities.o $(ODIR)/pfsimul.o $(ODIR)/pfload.o $(ODIR)/pfworker.o
 
 
 

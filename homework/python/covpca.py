@@ -5,9 +5,8 @@
 
 
 import sys
-
+import time
 import numpy as np
-import scipy as sp
 
 # beginning
 
@@ -42,10 +41,14 @@ for i in xrange(N):
 
 cov_file.close()
 
-
-eigval, eigvec = sp.sparse.linalg.eigsh(q, k=2)
-
+print "pca ..."
+t = time.time()
+eigval, eigvec = np.linalg.eig(q)
+t = time.time() - t 
 print "done"
+print "PCA took " + str(round(1000.0*t)) + " ms"
+
+
 sys.stdout.flush()
 
 # end
