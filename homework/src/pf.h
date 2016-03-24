@@ -3,7 +3,7 @@
 
 #include <pthread.h>
 
-/** This bag**/
+
 typedef struct Portfolio {
 	int n; /** number of assets (whose quantities are non 0) **/
 	int t; /** number of periods **/

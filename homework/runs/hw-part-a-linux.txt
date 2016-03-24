@@ -1,0 +1,37 @@
+will compute 10 eigen values, tolerance: 1e-06
+n = 947
+read and loaded data for n = 947 with code 0
+Iteration 0, 1-th EigenValue: 1.20149,   L1(error) = 4.681480770e-01
+Converged with tol 1e-06! at iter 6. 1-th EigenValue: 0.0832175
+Iteration 0, 2-th EigenValue: 0.0706,   L1(error) = 2.677589357e-01
+Converged with tol 1e-06! at iter 61. 2-th EigenValue: 0.0217713
+Iteration 0, 3-th EigenValue: 0.0633632,   L1(error) = 2.656806598e-01
+Iteration 100, 3-th EigenValue: 0.018991,   L1(error) = 1.591976835e-06
+Converged with tol 1e-06! at iter 110. 3-th EigenValue: 0.018991
+Iteration 0, 4-th EigenValue: 0.0320983,   L1(error) = 2.571342653e-01
+Converged with tol 1e-06! at iter 13. 4-th EigenValue: 0.0181188
+Iteration 0, 5-th EigenValue: 0.0260267,   L1(error) = 2.549202045e-01
+Converged with tol 1e-06! at iter 34. 5-th EigenValue: 0.00789802
+Iteration 0, 6-th EigenValue: 0.00989646,   L1(error) = 2.428482362e-01
+Converged with tol 1e-06! at iter 17. 6-th EigenValue: 0.00628969
+Iteration 0, 7-th EigenValue: 0.00537896,   L1(error) = 2.382783740e-01
+Converged with tol 1e-06! at iter 84. 7-th EigenValue: 0.00431537
+Iteration 0, 8-th EigenValue: 0.0053762,   L1(error) = 2.382783209e-01
+Iteration 100, 8-th EigenValue: 0.00379325,   L1(error) = 1.056574694e-05
+Iteration 200, 8-th EigenValue: 0.00379329,   L1(error) = 1.358963367e-06
+Converged with tol 1e-06! at iter 215. 8-th EigenValue: 0.00379329
+Iteration 0, 9-th EigenValue: 0.0044207,   L1(error) = 2.363722839e-01
+Converged with tol 1e-06! at iter 47. 9-th EigenValue: 0.00371618
+Iteration 0, 10-th EigenValue: 0.0043829,   L1(error) = 2.363258143e-01
+Converged with tol 1e-06! at iter 91. 10-th EigenValue: 0.00312891
+1-th EigenValue estimate: 0.0832175
+2-th EigenValue estimate: 0.0217713
+3-th EigenValue estimate: 0.018991
+4-th EigenValue estimate: 0.0181188
+5-th EigenValue estimate: 0.00789802
+6-th EigenValue estimate: 0.00628969
+7-th EigenValue estimate: 0.00431537
+8-th EigenValue estimate: 0.00379329
+9-th EigenValue estimate: 0.00371618
+10-th EigenValue estimate: 0.00312891
+PCA took 1050 ms

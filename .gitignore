@@ -6,3 +6,5 @@ homework/.project
 homework/.settings
 homework/data-linux
 homework/data-windows
+homework/runs/pf_returns.txt
+homework/runs/pf_values.txt

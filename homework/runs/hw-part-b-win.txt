@@ -1,0 +1,10 @@
+---Power method PCA using C---
+for 10 eigen values
+PCA took 1170 ms
+---------------
+---Numpy PCA---
+for 947 eigen values
+reading data...
+pca ...
+done
+PCA took 2168.0 ms

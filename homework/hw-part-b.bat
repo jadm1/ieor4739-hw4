@@ -9,5 +9,3 @@ echo ---Numpy PCA---
 echo for 947 eigen values
 python python\covpca.py data\q.txt
 
-pause
-

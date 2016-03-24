@@ -1,0 +1,39 @@
+will compute 10 eigen values, tolerance: 1e-006
+n = 947
+read and loaded data for n = 947 with code 0
+Iteration 0, 1-th EigenValue: 1.20594,   L1(error) = 4.783037153e-001
+Converged with tol 1e-006! at iter 6. 1-th EigenValue: 0.0832175
+Iteration 0, 2-th EigenValue: 0.0786162,   L1(error) = 2.780606766e-001
+Converged with tol 1e-006! at iter 61. 2-th EigenValue: 0.0217713
+Iteration 0, 3-th EigenValue: 0.069762,   L1(error) = 2.749390631e-001
+Iteration 100, 3-th EigenValue: 0.018991,   L1(error) = 1.935991553e-006
+Converged with tol 1e-006! at iter 115. 3-th EigenValue: 0.018991
+Iteration 0, 4-th EigenValue: 0.0358219,   L1(error) = 2.666204636e-001
+Converged with tol 1e-006! at iter 13. 4-th EigenValue: 0.0181188
+Iteration 0, 5-th EigenValue: 0.0255773,   L1(error) = 2.635482135e-001
+Converged with tol 1e-006! at iter 35. 5-th EigenValue: 0.00789802
+Iteration 0, 6-th EigenValue: 0.0111899,   L1(error) = 2.546300504e-001
+Converged with tol 1e-006! at iter 17. 6-th EigenValue: 0.00628969
+Iteration 0, 7-th EigenValue: 0.00643754,   L1(error) = 2.498553231e-001
+Converged with tol 1e-006! at iter 75. 7-th EigenValue: 0.00431537
+Iteration 0, 8-th EigenValue: 0.00642652,   L1(error) = 2.498372429e-001
+Iteration 100, 8-th EigenValue: 0.00379262,   L1(error) = 3.937587374e-005
+Iteration 200, 8-th EigenValue: 0.00379328,   L1(error) = 5.143925653e-006
+Converged with tol 1e-006! at iter 280. 8-th EigenValue: 0.00379329
+Iteration 0, 9-th EigenValue: 0.00607336,   L1(error) = 2.490764918e-001
+Converged with tol 1e-006! at iter 33. 9-th EigenValue: 0.00371618
+Iteration 0, 10-th EigenValue: 0.00588204,   L1(error) = 2.486420529e-001
+Iteration 100, 10-th EigenValue: 0.00312883,   L1(error) = 2.779046437e-005
+Converged with tol 1e-006! at iter 150. 10-th EigenValue: 0.00312891
+1-th EigenValue estimate: 0.0832175
+2-th EigenValue estimate: 0.0217713
+3-th EigenValue estimate: 0.018991
+4-th EigenValue estimate: 0.0181188
+5-th EigenValue estimate: 0.00789802
+6-th EigenValue estimate: 0.00628969
+7-th EigenValue estimate: 0.00431537
+8-th EigenValue estimate: 0.00379329
+9-th EigenValue estimate: 0.00371618
+10-th EigenValue estimate: 0.00312891
+PCA took 1186 ms
+Appuyez sur une touche pour continuer... 
