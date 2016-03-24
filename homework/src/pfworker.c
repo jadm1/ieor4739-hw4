@@ -29,7 +29,7 @@ void* pfworker(void * arg) {
 
 	for (sim = start; sim <= end; sim++) {
 		portfolio_simulation(sim, &rseed, poutputmutex, pf, ID);
-		if (sim % (num_sim_local/10) == 0) {
+		if ((num_sim_local < 10) || sim % (num_sim_local/10) == 0) {
 			pthread_mutex_lock(poutputmutex);
 			printf("W %d: simulation %d, portfolio value: %g, avg daily return: %g %%\n", ID, sim, pf->pf_values[sim], pf->pf_returns[sim]*100.0);
 			pthread_mutex_unlock(poutputmutex);
