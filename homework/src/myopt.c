@@ -14,16 +14,18 @@ int main(int argc, char *argv[])
 	int max_iter;
 	double mingap;
 	int verbose;
+	double lambda;
 	FILE *output_f;
 
 	if(argc < 3) {
-		printf("usage: %s <myo input file> <portfolio positions output file> [-m max iterations] [-t min cost gap]\n", argv[0]);
+		printf("usage: %s <myo input file> <portfolio positions output file> [-m max iterations] [-t min cost gap] [-l risk aversion]\n", argv[0]);
 		retcode = 1; goto BACK;
 	}
 
 	max_iter = 10;
 	mingap = 1e-6;
 	verbose = 0;
+	lambda = 1.0;
 
 	for(j = 3; j < argc; j++) {
 		if (0 == strcmp(argv[j], "-m")) {
@@ -33,6 +35,10 @@ int main(int argc, char *argv[])
 		else if (0 == strcmp(argv[j],"-t")) {
 			j += 1;
 			mingap = atof(argv[j]);
+		}
+		else if (0 == strcmp(argv[j],"-l")) {
+			j += 1;
+			lambda = atof(argv[j]);
 		}
 		else if (0 == strcmp(argv[j],"-v")) {
 			verbose = 1;
@@ -55,6 +61,7 @@ int main(int argc, char *argv[])
 	if( (retcode = myoGetmyoFromFile(pmyo, argv[1])) )
 		goto BACK;
 
+	pmyo->lambda = lambda;
 	retcode = myoalgo(pmyo);
 
 	/** final output**/
@@ -142,7 +149,6 @@ int myoGetmyoFromFile(myo *pmyo, char *filename)
 	printf("n = %d f = %d\n", n, f);
 
 	pmyo->n = n; pmyo->f = f;
-	pmyo->lambda = 1.0;
 
 	pmyo->mu = (double *)calloc(n, sizeof(double));
 	pmyo->sigma2 = (double *)calloc(n, sizeof(double));

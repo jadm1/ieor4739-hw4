@@ -54,11 +54,11 @@ int myoprepare(myo *pmyo)
 	double sum, *V = pmyo->V, *F = pmyo->F;
 	/** first compute VtF, which is an nxf matrix **/
 
-	for(j = 0; j < n; j++){
-		for(i = 0; i < f; i++){
+	for(j = 0; j < n; j++) {
+		for(i = 0; i < f; i++) {
 			/* compute the (j,i) entry of VtF */
 			sum = 0;
-			for (k = 0; k < f; k++){
+			for (k = 0; k < f; k++) {
 				sum  += V[k*n + j]*F[k*f + i];
 			}
 			pmyo->VtF[j*f + i] = sum;

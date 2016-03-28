@@ -1,0 +1,35 @@
+Part a) and b)
+
+PCA on linux:
+C implementation (10 eigenvalues): 1050 ms
+Numpy (947 eigenvalues): 12644.0 ms
+PCA on windows:
+C implementation (10 eigenvalues): 1170 ms
+Numpy (947 eigenvalues): 2168.0 ms
+
+Numpy is always faster obviously.
+However Numpy is 6x faster on linux than on windows with latest versions installed.
+
+
+Part c)
+
+1000 P&L simulations over 504 periods 
+with multithreading on 4 cores and compiled with optimization:
+
+For lambda = 1.0 (low risk aversion)
+Portfolio assets: 8
+Average final value: 2.796 billion
+Average daily return: 0.3089 %
+On linux done in 202.4 seconds
+
+On windows done in 131.5 seconds
+
+For lambda = 1000.0 (high risk aversion)
+Portfolio assets: 29
+Average final value: 1.284 billion
+Average daily return: 0.0511 %
+On linux done in 729.9 seconds
+On windows done in 478.5 seconds
+
+windows ran the simulations 1.5x faster than linux on my laptop
+

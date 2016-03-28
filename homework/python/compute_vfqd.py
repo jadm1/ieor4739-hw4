@@ -77,6 +77,7 @@ dates = returns_file.readline().split()
 
 name = []
 returns = np.ndarray(shape=(N,T))
+mu = np.ndarray(shape=(N))
 assetid_dict = {}
 
 for id in xrange(N):
@@ -90,7 +91,9 @@ for id in xrange(N):
     
     line = returns_file.readline().split()
     for t in xrange(T):
-        returns[id, t] = float(line[t+1])
+        returns[id, t] = float(line[t+1]) 
+    
+    mu[id] = np.mean(returns[id, :])
 
 returns_file.close()
 
@@ -161,7 +164,6 @@ for i in xrange(fN):
 f_file.close()
 
 
-# Q takes a lot of space
 print "saving Q to %s ..." % q_filename
 q_file.write("n " + str(N) + "\n")
 q_file.write("matrix\n")
@@ -185,7 +187,7 @@ dat_file.write("assets " + str(N) + " factors " + str(fN) + "\n")
 dat_file.write("\n")
 dat_file.write("asset_returns\n")
 for i in xrange(N):
-    dat_file.write(str(0.0) + "\n") # mu == 0 because we look at return deviations
+    dat_file.write(str(mu[i]) + "\n") 
 dat_file.write("\n")
 dat_file.write("asset_upper_bounds\n")
 for i in xrange(N):

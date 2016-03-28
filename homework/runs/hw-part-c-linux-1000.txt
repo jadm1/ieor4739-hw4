@@ -1,0 +1,147 @@
+--- Myopt ---
+Mon Mar 28 11:35:17 2016
+
+Myopt with 1000 max iterations, mingap 1e-06, verbose no
+created myo at 0x84a0d0
+reading file data/myoinput.txt
+n = 947 f = 10
+asset_returns
+asset_upper_bounds
+asset_residual_variances
+V
+F
+done reading with code 0
+myoprepare returns 0
+find_feasible done at j = 1
+at iter: 0 step: 0.871642, cost: -0.419564
+at iter: 1 step: 0.105833, cost: -0.0623086
+at iter: 2 step: 0.25181, cost: -0.0462352
+at iter: 3 step: 0.18052, cost: -0.0324315
+at iter: 4 step: 0.00655973, cost: -0.0262351
+at iter: 5 step: 0.0503281, cost: -0.0242356
+at iter: 6 step: 0.128534, cost: -0.021569
+at iter: 7 step: 0.00759879, cost: -0.0180641
+at iter: 8 step: 0.0380425, cost: -0.0165739
+at iter: 9 step: 0.0430451, cost: -0.0157135
+at iter: 10 step: 0.0688267, cost: -0.0133759
+at iter: 11 step: 0.0686209, cost: -0.011632
+at iter: 12 step: 0.0653195, cost: -0.00878594
+at iter: 13 step: 0.0429339, cost: -0.00766312
+at iter: 14 step: 0.135403, cost: -0.00747433
+at iter: 15 step: 0.0097225, cost: -0.00723133
+at iter: 16 step: 0.0567704, cost: -0.00677734
+at iter: 17 step: 0.0141477, cost: -0.00605953
+at iter: 18 step: 0.0120636, cost: -0.00518455
+at iter: 19 step: 0.0284396, cost: -0.00485775
+at iter: 20 step: 0.0097958, cost: -0.0034958
+at iter: 21 step: 0.00649018, cost: -0.00327617
+at iter: 22 step: 0.0249371, cost: -0.00321918
+at iter: 23 step: 0.057292, cost: -0.00272682
+at iter: 24 step: 0.00951931, cost: -0.00351141
+at iter: 25 step: 0.0170334, cost: -0.00250964
+at iter: 26 step: 0.00135051, cost: -0.00210306
+at iter: 27 step: 0.0160346, cost: -0.00204646
+at iter: 28 step: 0.00405633, cost: -0.00203905
+at iter: 29 step: 0.00486178, cost: -0.00150104
+at iter: 30 step: 0.00970621, cost: -0.00132322
+at iter: 31 step: 0.0291988, cost: -0.00131599
+at iter: 32 step: 0.00629759, cost: -0.00166806
+at iter: 33 step: 0.00453692, cost: -0.0015528
+at iter: 34 step: 0.00842022, cost: -0.00147696
+at iter: 35 step: 0.000331908, cost: -0.00131438
+at iter: 36 step: 0.00976042, cost: -0.00130539
+at iter: 37 step: 0.00982376, cost: -0.00119381
+at iter: 38 step: 0.00227755, cost: -0.00114107
+at iter: 39 step: 0.0212138, cost: -0.00094228
+at iter: 40 step: 0.0033388, cost: -0.00137391
+at iter: 41 step: 0.00850318, cost: -0.00129974
+at iter: 42 step: 0.0071327, cost: -0.00119976
+at iter: 43 step: 0.00891723, cost: -0.00121509
+at iter: 44 step: 0.00886166, cost: -0.00108416
+at iter: 45 step: 0.000245861, cost: -0.000973477
+at iter: 46 step: 0.00183728, cost: -0.000919805
+at iter: 47 step: 0.0189033, cost: -0.00083693
+at iter: 48 step: 0.00910389, cost: -0.00110561
+at iter: 49 step: 0.00784527, cost: -0.00104612
+at iter: 50 step: 0.00768153, cost: -0.000961342
+at iter: 51 step: 0.000551426, cost: -0.000857474
+at iter: 52 step: 0.00189707, cost: -0.000814554
+at iter: 53 step: 0.00239122, cost: -0.000815263
+
+myoalgo returning with code 0
+
+freeing myo at 0x84a0d0
+---------------
+--- PnL simulations ---
+loading positions from data/x.txt
+Portfolio assets: 29
+x: 0.0222178 0.0322945 0.0733881 0.0201638 0.0658641 0.00753529 0.00402013 0.0411417 0.0137169 0.0183716 0.00260964 0.0380873 0.0054509 0.00830984 0.0828591 0.02443 0.00701395 0.0096279 0.00189254 0.0131408 0.0168424 0.026076 0.343545 0.0299218 0.00294036 0.0422944 0.0384531 0.00615253 0.00163809
+sum of positions : 100 %
+loading prices from data/p.txt
+periods: 504
+prices loaded
+computing vector of averages of changes...
+delta: -0.015637 0.0420708 0.00502943 0.00178956 0.00278069 0.0359009 0.0304949 0.00417328 0.00945321 -0.00600135 0.0337517 0.00167836 1.24433 0.0371968 0.0853058 0.017345 0.033059 -0.0658029 -0.00172962 0.0137114 -0.00532803 0.00338257 0.0151016 0.0140625 -0.0881909 0.000857117 0.254251 -0.0440589 -0.00252485
+computing vector std's of changes...
+sigma: 0.471939 0.784601 0.161411 0.160887 0.0835941 1.1736 0.735292 0.124016 0.367623 0.685152 3.19873 0.0563197 15.4654 2.57943 0.955681 0.319281 0.498124 3.24383 0.512557 0.374535 0.42088 0.179508 0.136346 0.145593 1.52878 0.0754416 6.79913 0.827808 0.0921932
+Initial portfolio value: 1e+09
+Launching thread for worker 0
+Launching thread for worker 1
+Launching thread for worker 2
+Worker 0 started. 250000 sims assigned: from 0 to 249999 
+Worker 1 started. 250000 sims assigned: from 250000 to 499999 
+Launching thread for worker 3
+Worker 2 started. 250000 sims assigned: from 500000 to 749999 
+Waiting for threads...
+Worker 3 started. 250000 sims assigned: from 750000 to 999999 
+W 3: simulation 750000, portfolio value: 1.28562e+09, avg daily return: 0.0517059 %
+W 1: simulation 250000, portfolio value: 1.28154e+09, avg daily return: 0.0508322 %
+W 0: simulation 0, portfolio value: 1.28425e+09, avg daily return: 0.0504666 %
+W 2: simulation 500000, portfolio value: 1.28304e+09, avg daily return: 0.0515834 %
+W 3: simulation 775000, portfolio value: 1.28114e+09, avg daily return: 0.0511301 %
+W 0: simulation 25000, portfolio value: 1.28686e+09, avg daily return: 0.0519208 %
+W 1: simulation 275000, portfolio value: 1.28157e+09, avg daily return: 0.0505406 %
+W 2: simulation 525000, portfolio value: 1.27829e+09, avg daily return: 0.0509836 %
+W 3: simulation 800000, portfolio value: 1.28551e+09, avg daily return: 0.0512764 %
+W 0: simulation 50000, portfolio value: 1.28304e+09, avg daily return: 0.0503309 %
+W 1: simulation 300000, portfolio value: 1.28484e+09, avg daily return: 0.0507068 %
+W 2: simulation 550000, portfolio value: 1.28269e+09, avg daily return: 0.0505139 %
+W 3: simulation 825000, portfolio value: 1.28308e+09, avg daily return: 0.0510813 %
+W 0: simulation 75000, portfolio value: 1.28038e+09, avg daily return: 0.0499302 %
+W 1: simulation 325000, portfolio value: 1.284e+09, avg daily return: 0.0508073 %
+W 2: simulation 575000, portfolio value: 1.29128e+09, avg daily return: 0.0533863 %
+W 3: simulation 850000, portfolio value: 1.28915e+09, avg daily return: 0.051416 %
+W 0: simulation 100000, portfolio value: 1.28299e+09, avg daily return: 0.0511859 %
+W 1: simulation 350000, portfolio value: 1.28338e+09, avg daily return: 0.0518246 %
+W 2: simulation 600000, portfolio value: 1.28009e+09, avg daily return: 0.0501134 %
+W 3: simulation 875000, portfolio value: 1.28243e+09, avg daily return: 0.0516977 %
+W 0: simulation 125000, portfolio value: 1.28097e+09, avg daily return: 0.0512174 %
+W 1: simulation 375000, portfolio value: 1.28238e+09, avg daily return: 0.0514971 %
+W 2: simulation 625000, portfolio value: 1.27713e+09, avg daily return: 0.0485376 %
+W 3: simulation 900000, portfolio value: 1.28322e+09, avg daily return: 0.0504253 %
+W 0: simulation 150000, portfolio value: 1.2827e+09, avg daily return: 0.051339 %
+W 1: simulation 400000, portfolio value: 1.28613e+09, avg daily return: 0.0513782 %
+W 2: simulation 650000, portfolio value: 1.27942e+09, avg daily return: 0.0496853 %
+W 3: simulation 925000, portfolio value: 1.28424e+09, avg daily return: 0.0511042 %
+W 0: simulation 175000, portfolio value: 1.28701e+09, avg daily return: 0.0504824 %
+W 1: simulation 425000, portfolio value: 1.28408e+09, avg daily return: 0.0506229 %
+W 2: simulation 675000, portfolio value: 1.28201e+09, avg daily return: 0.0519362 %
+W 3: simulation 950000, portfolio value: 1.28409e+09, avg daily return: 0.0508688 %
+W 0: simulation 200000, portfolio value: 1.28078e+09, avg daily return: 0.0511716 %
+W 1: simulation 450000, portfolio value: 1.28582e+09, avg daily return: 0.0513635 %
+W 2: simulation 700000, portfolio value: 1.28588e+09, avg daily return: 0.051318 %
+W 3: simulation 975000, portfolio value: 1.28262e+09, avg daily return: 0.0519088 %
+W 0: simulation 225000, portfolio value: 1.28537e+09, avg daily return: 0.0521348 %
+W 1: simulation 475000, portfolio value: 1.28028e+09, avg daily return: 0.0507442 %
+W 2: simulation 725000, portfolio value: 1.28666e+09, avg daily return: 0.0523063 %
+Thread 0 joined ...
+Thread 1 joined ...
+Thread 2 joined ...
+Thread 3 joined ...
+P&L simulations done in 729.9 seconds
+Averaging over all simulations
+Average final value: 1.28362e+09
+Average daily return: 0.0510732 %
+saving values...
+saving returns...
+freeing memory ...

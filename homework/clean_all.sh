@@ -2,6 +2,7 @@
 make clean
 rm bin/* -f
 rm obj/* -f
+rm data/returns.txt -f
 rm data/d.txt -f
 rm data/f.txt -f
 rm data/v.txt -f

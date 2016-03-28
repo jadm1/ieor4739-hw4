@@ -1,0 +1,126 @@
+--- Myopt ---
+Sun Mar 27 20:47:34 2016
+
+Myopt with 1000 max iterations, mingap 1e-06, verbose no
+created myo at 0xe4e0d0
+reading file data/myoinput.txt
+n = 947 f = 10
+asset_returns
+asset_upper_bounds
+asset_residual_variances
+V
+F
+done reading with code 0
+myoprepare returns 0
+find_feasible done at j = 1
+at iter: 0 step: 0.173805, cost: -0.00647679
+at iter: 1 step: 0.581516, cost: -0.00419902
+at iter: 2 step: 0.0793223, cost: -0.00318628
+at iter: 3 step: 0.0863142, cost: -0.00293476
+at iter: 4 step: 0.391394, cost: -0.00276801
+at iter: 5 step: 0.510788, cost: -0.00126907
+at iter: 6 step: 0.0611622, cost: -0.0020987
+at iter: 7 step: 0.137344, cost: -0.000687482
+at iter: 8 step: 0.0179867, cost: -0.000676471
+at iter: 9 step: 0.017752, cost: -0.000558627
+at iter: 10 step: 0.258375, cost: -0.000470508
+at iter: 11 step: 0.022125, cost: -0.000705655
+at iter: 12 step: 0.0838542, cost: -0.000367723
+at iter: 13 step: 0.0744224, cost: -0.000342326
+at iter: 14 step: 0.0169579, cost: -0.000536334
+at iter: 15 step: 0.0110624, cost: -0.000412703
+at iter: 16 step: 0.108881, cost: -0.000270395
+at iter: 17 step: 0.0105928, cost: -0.000331132
+at iter: 18 step: 0.0396796, cost: -0.000161743
+at iter: 19 step: 0.0451766, cost: -0.000198339
+at iter: 20 step: 0.00966719, cost: -0.000301812
+at iter: 21 step: 0.00547834, cost: -0.00020238
+at iter: 22 step: 0.10604, cost: -0.000147905
+at iter: 23 step: 0.0105306, cost: -0.00032956
+at iter: 24 step: 0.0318716, cost: -0.000137043
+at iter: 25 step: 0.0398712, cost: -0.000164452
+at iter: 26 step: 0.00809262, cost: -0.000252125
+at iter: 27 step: 0.00518722, cost: -0.000191687
+at iter: 28 step: 0.0871295, cost: -0.000123732
+at iter: 29 step: 0.00832849, cost: -0.000259716
+at iter: 30 step: 0.0357071, cost: -0.000155838
+at iter: 31 step: 0.00437867, cost: -0.00013549
+at iter: 32 step: 0.00365117, cost: -0.000134581
+
+myoalgo returning with code 0
+
+freeing myo at 0xe4e0d0
+---------------
+--- PnL simulations ---
+loading positions from data/x.txt
+Portfolio assets: 8
+x: 0.0226248 0.152521 0.215662 0.199167 0.0951568 0.216789 0.0297269 0.0683519
+sum of positions : 99.9999 %
+loading prices from data/p.txt
+periods: 504
+prices loaded
+computing vector of averages of changes...
+delta: -0.015637 0.0813121 0.0861829 0.0912326 0.160199 0.239523 -0.0470378 0.0377137
+computing vector std's of changes...
+sigma: 0.471939 3.38199 3.92417 0.992868 17.2586 2.81695 10.21 0.965557
+Initial portfolio value: 9.99999e+08
+Launching thread for worker 0
+Launching thread for worker 1
+Launching thread for worker 2
+Worker 1 started. 250000 sims assigned: from 250000 to 499999 
+Launching thread for worker 3
+Worker 2 started. 250000 sims assigned: from 500000 to 749999 
+Worker 0 started. 250000 sims assigned: from 0 to 249999 
+Waiting for threads...
+Worker 3 started. 250000 sims assigned: from 750000 to 999999 
+W 0: simulation 0, portfolio value: 2.94984e+09, avg daily return: 0.340424 %
+W 1: simulation 250000, portfolio value: 2.842e+09, avg daily return: 0.312796 %
+W 3: simulation 750000, portfolio value: 2.84129e+09, avg daily return: 0.332479 %
+W 2: simulation 500000, portfolio value: 2.73236e+09, avg daily return: 0.315094 %
+W 3: simulation 775000, portfolio value: 2.80353e+09, avg daily return: 0.308387 %
+W 2: simulation 525000, portfolio value: 2.8831e+09, avg daily return: 0.334124 %
+W 0: simulation 25000, portfolio value: 2.83197e+09, avg daily return: 0.321508 %
+W 1: simulation 275000, portfolio value: 2.7326e+09, avg daily return: 0.311272 %
+W 3: simulation 800000, portfolio value: 2.82263e+09, avg daily return: 0.309323 %
+W 2: simulation 550000, portfolio value: 2.80311e+09, avg daily return: 0.310865 %
+W 0: simulation 50000, portfolio value: 2.78502e+09, avg daily return: 0.304011 %
+W 1: simulation 300000, portfolio value: 2.85506e+09, avg daily return: 0.321187 %
+W 3: simulation 825000, portfolio value: 2.6868e+09, avg daily return: 0.303648 %
+W 2: simulation 575000, portfolio value: 2.74916e+09, avg daily return: 0.31036 %
+W 0: simulation 75000, portfolio value: 2.81777e+09, avg daily return: 0.292113 %
+W 1: simulation 325000, portfolio value: 2.9158e+09, avg daily return: 0.320516 %
+W 3: simulation 850000, portfolio value: 2.70085e+09, avg daily return: 0.291153 %
+W 2: simulation 600000, portfolio value: 2.76143e+09, avg daily return: 0.28531 %
+W 0: simulation 100000, portfolio value: 2.77992e+09, avg daily return: 0.298828 %
+W 1: simulation 350000, portfolio value: 2.79791e+09, avg daily return: 0.28936 %
+W 3: simulation 875000, portfolio value: 2.79717e+09, avg daily return: 0.301991 %
+W 2: simulation 625000, portfolio value: 2.80152e+09, avg daily return: 0.307616 %
+W 0: simulation 125000, portfolio value: 2.82818e+09, avg daily return: 0.315309 %
+W 1: simulation 375000, portfolio value: 2.76214e+09, avg daily return: 0.322492 %
+W 3: simulation 900000, portfolio value: 2.84776e+09, avg daily return: 0.28399 %
+W 2: simulation 650000, portfolio value: 2.72015e+09, avg daily return: 0.321615 %
+W 0: simulation 150000, portfolio value: 2.82732e+09, avg daily return: 0.292511 %
+W 1: simulation 400000, portfolio value: 2.83561e+09, avg daily return: 0.303706 %
+W 3: simulation 925000, portfolio value: 2.79157e+09, avg daily return: 0.316774 %
+W 2: simulation 675000, portfolio value: 2.73992e+09, avg daily return: 0.30115 %
+W 0: simulation 175000, portfolio value: 2.79537e+09, avg daily return: 0.318272 %
+W 1: simulation 425000, portfolio value: 2.79143e+09, avg daily return: 0.329716 %
+W 3: simulation 950000, portfolio value: 2.69208e+09, avg daily return: 0.291871 %
+W 2: simulation 700000, portfolio value: 2.9177e+09, avg daily return: 0.313223 %
+W 1: simulation 450000, portfolio value: 2.72483e+09, avg daily return: 0.325978 %
+W 0: simulation 200000, portfolio value: 2.81407e+09, avg daily return: 0.329684 %
+W 3: simulation 975000, portfolio value: 2.74724e+09, avg daily return: 0.295024 %
+W 2: simulation 725000, portfolio value: 2.80853e+09, avg daily return: 0.305081 %
+W 1: simulation 475000, portfolio value: 2.71919e+09, avg daily return: 0.314585 %
+W 0: simulation 225000, portfolio value: 2.84239e+09, avg daily return: 0.316547 %
+Thread 0 joined ...
+Thread 1 joined ...
+Thread 2 joined ...
+Thread 3 joined ...
+P&L simulations done in 202.4 seconds
+Averaging over all simulations
+Average final value: 2.79568e+09
+Average daily return: 0.308935 %
+saving values...
+saving returns...
+freeing memory ...
